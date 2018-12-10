@@ -87,9 +87,9 @@ namespace CapstoneProject
                 case "h":
                     if (playerTurn == 0)
                     {
-                        ChooseStartingPlayer(playerTurn, player1Name, player2Name);
+                        playerTurn = ChooseStartingPlayer(playerTurn, player1Name, player2Name);
                     }
-                    PlayGame(places);
+                    PlayGame(places, playerTurn);
                     break;
                 case "q":
                     break;
@@ -101,9 +101,9 @@ namespace CapstoneProject
 
         }
 
-        private static void PlayGame(string[] places)
+        private static void PlayGame(string[] places, int playerTurn)
         {
-            bool win = false;
+            bool gameOver = false;
             HelperMethods.DisplayHeader("Play the game");
             HelperMethods.DisplayContinuePrompt();
             do
@@ -120,22 +120,105 @@ namespace CapstoneProject
 
                 if (playerTurn == 1)
                 {
-                    places = PlayerMove(player1Name, 2, places);
+                    places = PlayerMove(player1Name, places, player1Letter);
+                    playerTurn = 2;
+                    gameOver = WinChecker(places, player1Letter, player1Name, gameOver);
                 }
                 else if (playerTurn == 2)
                 {
-                    places = PlayerMove(player2Name, 1, places);
+                    places = PlayerMove(player2Name, places, player2Letter);
+                    playerTurn = 1;
+                    gameOver = WinChecker(player2Letter, player2Name, gameOver, places);
                 }
-                win = WinChecker()
+                if (!gameOver)
+                {
+                    gameOver = TieChecker(places);
+                }
                 HelperMethods.DisplayContinuePrompt();
-            } while (!win);
+            } while (!gameOver);
         }
 
-        private static string[] PlayerMove(string playerName, int playerTurn, string[] places)
+        private static bool TieChecker(string[] places)
         {
+            for (int i = 0; i < places.Length; i++)
+            {
+                if (places[i] == null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool WinChecker(string[] places, string player2Letter, string player1Name, bool win)
+        {
+            if (places[0] == player2Letter && places[1] == player2Letter && places[2] == player2Letter)
+                win = true;
+            else if (places[3] == player2Letter && places[4] == player2Letter && places[5] == player2Letter)
+                win = true;
+            else if (places[6] == player2Letter && places[7] == player2Letter && places[8] == player2Letter)
+                win = true;
+            else if (places[0] == player2Letter && places[3] == player2Letter && places[6] == player2Letter)
+                win = true;
+            else if (places[1] == player2Letter && places[4] == player2Letter && places[7] == player2Letter)
+                win = true;
+            else if (places[2] == player2Letter && places[5] == player2Letter && places[8] == player2Letter)
+                win = true;
+            else if (places[0] == player2Letter && places[4] == player2Letter && places[8] == player2Letter)
+                win = true;
+            else if (places[2] == player2Letter && places[4] == player2Letter && places[6] == player2Letter)
+                win = true;
+            else
+                win = false;
+            if (win == true)
+                Console.WriteLine($"{player1Name} wins! Congratulations!");
+            return win;
+        }
+
+        private static bool WinChecker(string player2Letter, string player2Name, bool win, string[] places)
+        {
+            if (places[0] == player2Letter && places[1] == player2Letter && places[2] == player2Letter)
+                win = true;
+            else if (places[3] == player2Letter && places[4] == player2Letter && places[5] == player2Letter)
+                win = true;
+            else if (places[6] == player2Letter && places[7] == player2Letter && places[8] == player2Letter)
+                win = true;
+            else if (places[0] == player2Letter && places[3] == player2Letter && places[6] == player2Letter)
+                win = true;
+            else if (places[1] == player2Letter && places[4] == player2Letter && places[7] == player2Letter)
+                win = true;
+            else if (places[2] == player2Letter && places[5] == player2Letter && places[8] == player2Letter)
+                win = true;
+            else if (places[0] == player2Letter && places[4] == player2Letter && places[8] == player2Letter)
+                win = true;
+            else if (places[2] == player2Letter && places[4] == player2Letter && places[6] == player2Letter)
+                win = true;
+            else
+                win = false;
+            if (win == true)
+                Console.WriteLine($"{player2Name} wins! Congratulations!");
+            return win;
+        }
+
+        private static string[] PlayerMove(string playerName, string[] places, string playerLetter)
+        {
+            bool validInput = false;
+            int userChoice;
             Console.WriteLine($"{playerName}'s turn! Enter a number to mark one of the empty spaces.");
             Console.WriteLine("The grid is 1-9, 1 being top left, 3 being top right, 7 bottom left, 9 bottom right.");
-
+            do
+            {
+                int.TryParse(Console.ReadLine(), out userChoice);
+                if (places[userChoice - 1] != null)
+                {
+                    Console.WriteLine("That space is occupied! Please try again.");
+                }
+                else
+                {
+                    places[userChoice - 1] = playerLetter;
+                    validInput = true;
+                }
+            } while (!validInput);
             return places;
         }
 
@@ -186,10 +269,12 @@ namespace CapstoneProject
             if (startPlayer == 1)
             {
                 Console.WriteLine($"The starting player is {player1Name}");
+                startPlayer = 1;
             }
             else
             {
                 Console.WriteLine($"The starting player is {player2Name}");
+                startPlayer = 2;
             }
             HelperMethods.DisplayContinuePrompt();
             return startPlayer;
