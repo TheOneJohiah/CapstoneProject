@@ -24,6 +24,7 @@ namespace CapstoneProject
 
         public static void DisplayClosingScreen()
         {
+            Console.Clear();
             Console.WriteLine("\n\t\tThank you for using my App.");
             DisplayContinuePrompt();
         }
