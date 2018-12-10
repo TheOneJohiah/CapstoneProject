@@ -40,11 +40,11 @@ namespace CapstoneProject
     class TicTacToe
     {
         // Define variables
-        static string player1Name = "Player 1";
-        static string player2Name = "Player 2";
-        static string player1Letter = "X";
-        static string player2Letter = "O";
-        static int playerTurn = 0;
+        string player1Name = "Player 1";
+        string player2Name = "Player 2";
+        string player1Letter = "X";
+        string player2Letter = "O";
+        int playerTurn = 0;
         string menuAnswer = null;
         string[] places = new string[9];
 
@@ -56,11 +56,11 @@ namespace CapstoneProject
             {
                 return false;
             };
-            gameLogic.ExecuteCommand(menuAnswer);
+            ExecuteCommand(menuAnswer, places, player1Name, player2Name, player1Letter, player2Letter, playerTurn);
             return true;
         }
 
-        private static void ExecuteCommand(string menuAnswer, string[] places)
+        private static void ExecuteCommand(string menuAnswer, string[] places, string player1Name, string player2Name, string player1Letter, string player2Letter, int playerTurn)
         {
             HelperMethods.DisplayHeader("Main menu");
             switch (menuAnswer)
@@ -103,7 +103,7 @@ namespace CapstoneProject
                     {
                         playerTurn = ChooseStartingPlayer(playerTurn, player1Name, player2Name);
                     }
-                    PlayGame(places, playerTurn);
+                    PlayGame(places, playerTurn, player1Name, player1Letter, player2Name, player2Letter);
                     break;
                 case "q":
                     break;
@@ -115,7 +115,7 @@ namespace CapstoneProject
 
         }
 
-        private static void PlayGame(string[] places, int playerTurn)
+        private static void PlayGame(string[] places, int playerTurn, string player1Name, string player1Letter, string player2Name, string player2Letter)
         {
             bool gameOver = false;
             HelperMethods.DisplayHeader("Play the game");
@@ -128,7 +128,7 @@ namespace CapstoneProject
                 {
                     if (places[i] == null)
                     {
-                        Console.WriteLine(i+1);
+                        Console.Write($"{i+1}, ");
                     }
                 }
 
