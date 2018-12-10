@@ -169,6 +169,7 @@ namespace CapstoneProject
 
         private static bool WinChecker(string[] places, string playerLetter, string playerName, bool win)
         {
+            win = false;
             if (places[0] == playerLetter && places[1] == playerLetter && places[2] == playerLetter)
                 win = true;
             else if (places[3] == playerLetter && places[4] == playerLetter && places[5] == playerLetter)
