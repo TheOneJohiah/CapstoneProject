@@ -189,8 +189,10 @@ namespace CapstoneProject
             else
                 win = false;
             if (win == true)
+            {
                 Console.Clear();
                 Console.WriteLine($"\n{playerName} wins! Congratulations!");
+            }
             return win;
         }
         
