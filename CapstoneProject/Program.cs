@@ -17,16 +17,17 @@ namespace CapstoneProject
         Last Modified: 12/9/2018
         ************************************/
 
+        // Define static variables (I don't know enough about classes to use them; this was the only other way)
+        static string player1Name = "Player 1";
+        static string player2Name = "Player 2";
+        static string player1Letter = "X";
+        static string player2Letter = "O";
+        static int playerTurn = 0;
+
         static void Main(string[] args)
         {
             // Define variables
-            string victor = null;
             string menuAnswer = null;
-            string player1Name = "Player 1";
-            string player2Name = "Player 2";
-            string player1Letter = "X";
-            string player2Letter = "O";
-            int startPlayer = 0;
             string[] places = new string[9];
 
             // Explain the application
@@ -37,7 +38,7 @@ namespace CapstoneProject
             {
                 // Display the main menu
                 menuAnswer = DisplayMenu();
-                ExecuteCommand(menuAnswer, player1Name, player2Name, player1Letter, player2Letter, victor, startPlayer, places);
+                ExecuteCommand(menuAnswer, places);
             } while (menuAnswer != "q");
             
 
@@ -45,7 +46,7 @@ namespace CapstoneProject
             HelperMethods.DisplayClosingScreen();
         }
 
-        private static void ExecuteCommand(string menuAnswer, string player1Name, string player2Name, string player1Letter, string player2Letter, string victor, int startPlayer, string[] places)
+        private static void ExecuteCommand(string menuAnswer, string[] places)
         {
             HelperMethods.DisplayHeader("Main menu");
             switch (menuAnswer)
@@ -62,22 +63,33 @@ namespace CapstoneProject
                     while (player1Letter == player2Letter)
                     {
                         Console.WriteLine("Your letters cannot be identical! Please enter new letters.");
+                        HelperMethods.DisplayContinuePrompt();
                         player1Letter = ChoosePlayerSymbol(player1Letter, player1Name, player2Letter);
                         player2Letter = ChoosePlayerSymbol(player2Letter, player2Name, player1Letter);
                     }
                     break;
                 case "d":
-                    startPlayer = 1;
+                    playerTurn = 1;
                     Console.WriteLine($"The starting player is {player1Name}");
                     HelperMethods.DisplayContinuePrompt();
                     break;
                 case "e":
-                    startPlayer = 2;
+                    playerTurn = 2;
                     Console.WriteLine($"The starting player is {player2Name}");
                     HelperMethods.DisplayContinuePrompt();
                     break;
                 case "f":
-                    startPlayer = ChooseStartingPlayer(startPlayer, player1Name, player2Name);
+                    playerTurn = ChooseStartingPlayer(playerTurn, player1Name, player2Name);
+                    break;
+                case "g":
+                    DisplayRules();
+                    break;
+                case "h":
+                    if (playerTurn == 0)
+                    {
+                        ChooseStartingPlayer(playerTurn, player1Name, player2Name);
+                    }
+                    PlayGame(places);
                     break;
                 case "q":
                     break;
@@ -87,6 +99,44 @@ namespace CapstoneProject
                     break;
             }
 
+        }
+
+        private static void PlayGame(string[] places)
+        {
+            bool win = false;
+            HelperMethods.DisplayHeader("Play the game");
+            HelperMethods.DisplayContinuePrompt();
+            do
+            {
+                BoardDisplay(places);
+                Console.WriteLine("Current empty spaces:");
+                for (int i = 0; i < 9; i++)
+                {
+                    if (places[i] == null)
+                    {
+                        Console.WriteLine(i+1);
+                    }
+                }
+
+                if (playerTurn == 1)
+                {
+                    places = PlayerMove(player1Name, 2, places);
+                }
+                else if (playerTurn == 2)
+                {
+                    places = PlayerMove(player2Name, 1, places);
+                }
+                win = WinChecker()
+                HelperMethods.DisplayContinuePrompt();
+            } while (!win);
+        }
+
+        private static string[] PlayerMove(string playerName, int playerTurn, string[] places)
+        {
+            Console.WriteLine($"{playerName}'s turn! Enter a number to mark one of the empty spaces.");
+            Console.WriteLine("The grid is 1-9, 1 being top left, 3 being top right, 7 bottom left, 9 bottom right.");
+
+            return places;
         }
 
         private static string ChoosePlayerSymbol(string playerLetter, string playerName, string otherPlayerLetter)
@@ -171,6 +221,8 @@ namespace CapstoneProject
         {
             HelperMethods.DisplayHeader($"Choose a new name for {playerName}");
             playerName = Console.ReadLine();
+            Console.WriteLine($"\nWelcome, {playerName}!");
+            HelperMethods.DisplayContinuePrompt();
             return playerName;
         }
 
@@ -187,6 +239,7 @@ namespace CapstoneProject
             Console.WriteLine("E) Give player 2 first move");
             Console.WriteLine("F) Randomise first move");
             Console.WriteLine("G) View Tic Tac Toe rules");
+            Console.WriteLine("H) Play a game!");
             Console.WriteLine("Q) Quit");
             menuAnswer = Console.ReadLine().ToLower();
 
@@ -195,17 +248,17 @@ namespace CapstoneProject
 
         private static void BoardDisplay(string[] places)
         {
-            Console.WriteLine("     |     |     |     |");
-            Console.WriteLine($"     |  {places[0]}".PadRight(11) + $"|  {places[1]}".PadRight(6) + $"|  {places[2]}".PadRight(6) + "|");
-            Console.WriteLine("     |     |     |     |");
-            Console.WriteLine("-----|-----|-----|-----|-----");
-            Console.WriteLine("     |     |     |     |");
-            Console.WriteLine($"     |  {places[3]}".PadRight(11) + $"|  {places[4]}".PadRight(6) + $"|  {places[5]}".PadRight(6) + "|");
-            Console.WriteLine("     |     |     |     |");
-            Console.WriteLine("-----|-----|-----|-----|-----");
-            Console.WriteLine("     |     |     |     |");
-            Console.WriteLine($"     |  {places[6]}".PadRight(11) + $"|  {places[7]}".PadRight(6) + $"|  {places[8]}".PadRight(6) + "|");
-            Console.WriteLine("     |     |     |     |");
+            Console.WriteLine("\n      |     |      ");
+            Console.WriteLine($"   {places[0]}".PadRight(6) + $"|  {places[1]}".PadRight(6) + $"|  {places[2]}");
+            Console.WriteLine("      |     |      ");
+            Console.WriteLine(" -----|-----|-----");
+            Console.WriteLine("      |     |      ");
+            Console.WriteLine($"   {places[3]}".PadRight(6) + $"|  {places[4]}".PadRight(6) + $"|  {places[5]}");
+            Console.WriteLine("      |     |      ");
+            Console.WriteLine(" -----|-----|-----");
+            Console.WriteLine("      |     |      ");
+            Console.WriteLine($"   {places[6]}".PadRight(6) + $"|  {places[7]}".PadRight(6) + $"|  {places[8]}");
+            Console.WriteLine("      |     |      ");
         }
     }
 }
