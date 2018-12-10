@@ -17,33 +17,47 @@ namespace CapstoneProject
         Last Modified: 12/9/2018
         ************************************/
 
-        // Define static variables (I don't know enough about classes to use them; this was the only other way)
+        static void Main(string[] args)
+        {
+            // Explain the application
+            HelperMethods.DisplayWelcomeScreen("Tic Tac Toe", "Micah Thoreson", "allows you to play a game of tic tac toe with a friend.");
+
+            TicTacToe gameLogic = new TicTacToe();
+
+            // Run the main section of the program
+            while (true)
+            {
+                if (!gameLogic.RunGameTick())
+                {
+                    break;
+                }
+            }
+
+            // Thank the user for playing; exit the program
+            HelperMethods.DisplayClosingScreen();
+        }
+    }
+    class TicTacToe
+    {
+        // Define variables
         static string player1Name = "Player 1";
         static string player2Name = "Player 2";
         static string player1Letter = "X";
         static string player2Letter = "O";
         static int playerTurn = 0;
+        string menuAnswer = null;
+        string[] places = new string[9];
 
-        static void Main(string[] args)
+        public bool RunGameTick()
         {
-            // Define variables
-            string menuAnswer = null;
-            string[] places = new string[9];
-
-            // Explain the application
-            HelperMethods.DisplayWelcomeScreen("Tic Tac Toe", "Micah Thoreson", "allows you to play a game of tic tac toe with a friend.");
-
-            // Run the main section of the program
-            do
+            // Display the main menu
+            string menuAnswer = DisplayMenu();
+            if (menuAnswer == "q")
             {
-                // Display the main menu
-                menuAnswer = DisplayMenu();
-                ExecuteCommand(menuAnswer, places);
-            } while (menuAnswer != "q");
-            
-
-            // Thank the user for playing; exit the program
-            HelperMethods.DisplayClosingScreen();
+                return false;
+            };
+            gameLogic.ExecuteCommand(menuAnswer);
+            return true;
         }
 
         private static void ExecuteCommand(string menuAnswer, string[] places)
@@ -128,7 +142,7 @@ namespace CapstoneProject
                 {
                     places = PlayerMove(player2Name, places, player2Letter);
                     playerTurn = 1;
-                    gameOver = WinChecker(player2Letter, player2Name, gameOver, places);
+                    gameOver = WinChecker(places, player2Letter, player2Name, gameOver);
                 }
                 if (!gameOver)
                 {
@@ -150,56 +164,31 @@ namespace CapstoneProject
             return true;
         }
 
-        private static bool WinChecker(string[] places, string player2Letter, string player1Name, bool win)
+        private static bool WinChecker(string[] places, string playerLetter, string playerName, bool win)
         {
-            if (places[0] == player2Letter && places[1] == player2Letter && places[2] == player2Letter)
+            if (places[0] == playerLetter && places[1] == playerLetter && places[2] == playerLetter)
                 win = true;
-            else if (places[3] == player2Letter && places[4] == player2Letter && places[5] == player2Letter)
+            else if (places[3] == playerLetter && places[4] == playerLetter && places[5] == playerLetter)
                 win = true;
-            else if (places[6] == player2Letter && places[7] == player2Letter && places[8] == player2Letter)
+            else if (places[6] == playerLetter && places[7] == playerLetter && places[8] == playerLetter)
                 win = true;
-            else if (places[0] == player2Letter && places[3] == player2Letter && places[6] == player2Letter)
+            else if (places[0] == playerLetter && places[3] == playerLetter && places[6] == playerLetter)
                 win = true;
-            else if (places[1] == player2Letter && places[4] == player2Letter && places[7] == player2Letter)
+            else if (places[1] == playerLetter && places[4] == playerLetter && places[7] == playerLetter)
                 win = true;
-            else if (places[2] == player2Letter && places[5] == player2Letter && places[8] == player2Letter)
+            else if (places[2] == playerLetter && places[5] == playerLetter && places[8] == playerLetter)
                 win = true;
-            else if (places[0] == player2Letter && places[4] == player2Letter && places[8] == player2Letter)
+            else if (places[0] == playerLetter && places[4] == playerLetter && places[8] == playerLetter)
                 win = true;
-            else if (places[2] == player2Letter && places[4] == player2Letter && places[6] == player2Letter)
+            else if (places[2] == playerLetter && places[4] == playerLetter && places[6] == playerLetter)
                 win = true;
             else
                 win = false;
             if (win == true)
-                Console.WriteLine($"{player1Name} wins! Congratulations!");
+                Console.WriteLine($"{playerName} wins! Congratulations!");
             return win;
         }
-
-        private static bool WinChecker(string player2Letter, string player2Name, bool win, string[] places)
-        {
-            if (places[0] == player2Letter && places[1] == player2Letter && places[2] == player2Letter)
-                win = true;
-            else if (places[3] == player2Letter && places[4] == player2Letter && places[5] == player2Letter)
-                win = true;
-            else if (places[6] == player2Letter && places[7] == player2Letter && places[8] == player2Letter)
-                win = true;
-            else if (places[0] == player2Letter && places[3] == player2Letter && places[6] == player2Letter)
-                win = true;
-            else if (places[1] == player2Letter && places[4] == player2Letter && places[7] == player2Letter)
-                win = true;
-            else if (places[2] == player2Letter && places[5] == player2Letter && places[8] == player2Letter)
-                win = true;
-            else if (places[0] == player2Letter && places[4] == player2Letter && places[8] == player2Letter)
-                win = true;
-            else if (places[2] == player2Letter && places[4] == player2Letter && places[6] == player2Letter)
-                win = true;
-            else
-                win = false;
-            if (win == true)
-                Console.WriteLine($"{player2Name} wins! Congratulations!");
-            return win;
-        }
-
+        
         private static string[] PlayerMove(string playerName, string[] places, string playerLetter)
         {
             bool validInput = false;
