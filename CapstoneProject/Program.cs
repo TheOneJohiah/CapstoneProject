@@ -45,7 +45,6 @@ namespace CapstoneProject
         string player1Letter = "X";
         string player2Letter = "O";
         int playerTurn = 0;
-        string menuAnswer = null;
         string[] places = new string[9];
 
         public bool RunGameTick()
@@ -56,11 +55,11 @@ namespace CapstoneProject
             {
                 return false;
             };
-            ExecuteCommand(menuAnswer, places, player1Name, player2Name, player1Letter, player2Letter, playerTurn);
+            ExecuteCommand(menuAnswer);
             return true;
         }
 
-        private static void ExecuteCommand(string menuAnswer, string[] places, string player1Name, string player2Name, string player1Letter, string player2Letter, int playerTurn)
+        private void ExecuteCommand(string menuAnswer)
         {
             HelperMethods.DisplayHeader("Main menu");
             switch (menuAnswer)
@@ -150,6 +149,10 @@ namespace CapstoneProject
                 }
                 HelperMethods.DisplayContinuePrompt();
             } while (!gameOver);
+            for (int i = 0; i < places.Length; i++)
+            {
+                places[i] = null;
+            }
         }
 
         private static bool TieChecker(string[] places)
@@ -185,7 +188,8 @@ namespace CapstoneProject
             else
                 win = false;
             if (win == true)
-                Console.WriteLine($"{playerName} wins! Congratulations!");
+                Console.Clear();
+                Console.WriteLine($"\n{playerName} wins! Congratulations!");
             return win;
         }
         
